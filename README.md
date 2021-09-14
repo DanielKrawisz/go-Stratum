@@ -55,9 +55,9 @@ require a response, others do not.
 
 | method | type |
 |--|--|
-| mining.notify             |       notification |
 | mining.set_difficulty     |       notification |
 | mining.set_version_mask   |       notification |
+| mining.notify             |       notification |
 | mining.set_extranonce     |       notification |
 | client.get_version        | request / response |
 | client.reconnect          |       notification |
@@ -65,24 +65,77 @@ require a response, others do not.
 
 ## Message Formats
 
+Stratum uses json. There are three message types: notification, request, and response.
+
 ### Notification
+
+Notification is for methods that don't require a response.
+
+```
+{
+  method: string,        // one of the methods above
+  params: [json...]      // array of json values
+}
+```
 
 ### Request
 
+Request is for methods that require a response.
+
+```
+{
+  "id": integer or string, // a unique id
+  "method": string,        // one of the methods above
+  "params": [json...]      // array of json values
+}
+```
+
 ### Response
+
+Response is the response to requests.
+
+```
+{
+  "id": integer or string,   // a unique id, must be the same as on the request
+  "result": json,            // could be anything
+  "error": null or [
+    unsigned int,            // error code
+    string                   // error message
+  ]
+}
+```
 
 ## Methods
 
-### mining.configure
-
 ### mining.authorize
+
+The first message that is sent in classic Stratum. For extended Stratum,
+`mining.configure` comes first and then `mining.authorize`.
 
 ### mining.subscribe
 
+Sent by the client after `mining.authorize`.
+
 ### mining.set_difficulty
 
-### mining.set_version_mask
+Sent by the server after responding to `mining.subscribe` and every time
+the difficulty changes.
 
 ### mining.notify
 
+Sent by the server whenever the block is updated. This happens periodically
+as the block is being built and when a new block is discovered.
+
+### mining.configure
+
+The first message that is sent in extended Stratum. Necessary for ASICBoost.
+The client sends this to tell the server what extensions it supports.
+
+### mining.set_version_mask
+
+Sent by the server to notify of a change in version mask. Requires the
+`version-rolling` extension.
+
 ### mining.submit
+
+Sent by the client when a new share is mined. Modified by `version-rolling`. 

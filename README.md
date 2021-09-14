@@ -41,6 +41,8 @@ require a response, others do not.
 
 ### Client-to-server
 
+| method | type |
+|--|--|
 | mining.configure          | request / response |
 | mining.authorize          | request / response |
 | mining.subscribe          | request / response |
@@ -51,6 +53,8 @@ require a response, others do not.
 
 ### Server-to-client
 
+| method | type |
+|--|--|
 | mining.notify             |       notification |
 | mining.set_difficulty     |       notification |
 | mining.set_version_mask   |       notification |

@@ -1,19 +1,35 @@
 package Stratum
 
-type Subscription struct{}
+// A Subscription is a 2-element json array containing a method
+// and a session id.
+type Subscription struct {
+	Method Method
+	ID     SessionID
+}
 
-type SubscribeRequestParams struct{}
+type SubscribeRequestParams struct {
+	UserAgent   string
+	ExtraNonce1 *SessionID
+}
 
-type SubscribeResponseParams struct{}
+type SubscribeResponseParams struct {
+	Subscriptions []Subscription
+	ExtraNonce1   SessionID
+	uint32        ExtraNonce2Size
+}
 
-type SubscribeRequest struct {
+type subscribeRequest struct {
 	Request
 }
 
-func (r *SubscribeRequest) Params() SubscribeRequestParams {}
+func (r *subscribeRequest) Params() (SubscribeRequestParams, error) {}
 
-type SubscribeResponse struct {
+func NewSubscribeRequest(MessageID, SubscriptionRequestParams) *subscribeRequest {}
+
+type subscribeResponse struct {
 	Response
 }
 
-func (r *SubscribeResponse) Params() SubscribeResponseParams {}
+func (r *subscribeResponse) Params() (SubscribeResponseParams, error) {}
+
+func NewSubscribeRequest(MessageID, SubscriptionResponseParams) *subscribeResponse {}

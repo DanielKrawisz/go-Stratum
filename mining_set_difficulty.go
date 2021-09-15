@@ -4,6 +4,6 @@ type setDifficulty struct {
 	Notification
 }
 
-func (au *setDifficulty) Params() uint64 {}
+func (au *setDifficulty) Params() (float64, error) {}
 
-func NewSetDifficulty(RequestID, uint64) (*setDifficulty, error) {}
+func NewSetDifficulty(MethodID, Difficulty) *setDifficulty {}

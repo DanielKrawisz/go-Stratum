@@ -4,6 +4,6 @@ package Stratum
 // is included in the coinbase script of the block that is produced.
 type ID uint32
 
-func EncodeId(id ID) (string, error) {}
+func EncodeId(id ID) string {}
 
 func DecodeId(string) (ID, error) {}

@@ -4,6 +4,6 @@ type setVersionMask struct {
 	Notification
 }
 
-func (au *setVersionMask) Params() uint32 {}
+func (au *setVersionMask) Params() (uint32, error) {}
 
-func NewSetVersionMask(RequestID, uint32) (*setVersionMask, error) {}
+func NewSetVersionMask(MethodID, uint32) *setVersionMask {}

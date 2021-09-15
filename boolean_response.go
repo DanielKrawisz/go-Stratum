@@ -1,9 +1,9 @@
 package Stratum
 
-type BooleanResponse struct {
+type booleanResponse struct {
 	Response
 }
 
-func (b *BooleanResponse) Valid() bool {}
+func (b *booleanResponse) Result() (bool, error) {}
 
-func (b *BooleanResponse) Result() bool {}
+func NewBooleanResponse(bool) *booleanResponse {}

@@ -1,41 +1,26 @@
 package Stratum
 
-type JobId uint32
+type JobID uint32
 
 type WorkerName string
 
-type Worker struct{}
+// Worker represents a miner who is doing work for the pool.
+// This would be used in an implementation of a Stratum server and is
+// not part of the Stratum protocol.
+type Worker struct {
+	Name WorkerName
+	ID SessionID
+	uint32 ExtraNonce2Size
+	*uint32 VersionMask
+}
 
-func (w *Worker) MarshallJSON() ([]byte, error) {}
-
-func (w *Worker) UnmarshallJSON([]byte) error {}
-
-// A share is the data returned by the worker. Job + Share = Proof
+// A share is the data returned by the worker in mining.submit.
 type Share struct {
-	Time               uint32
-	Nonce              uint32
-	ExtraNonce2        uint64
-	GeneralPurposeBits *uint32
+	Name  WorkerName
+	JobID JobID
+	work.Share
 }
 
-func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) Share {
-	return Share{
-		Time:               time,
-		Nonce:              nonce,
-		ExtraNonce2:        extraNonce2,
-		GeneralPurposeBits: nil}
-}
+func (s *Share) MarshallJSON() ([]byte, error) {}
 
-func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, gpb uint32) Share {
-	bits := new(uint32)
-	*bits = gpb
-	return Share{
-		Time:               time,
-		Nonce:              nonce,
-		ExtraNonce2:        extraNonce2,
-		GeneralPurposeBits: bits}
-}
-
-func (x *Share) MarshallJSON() ([]byte, error) {}
-
-func (x *Share) UnmarshallJSON([]byte) error {}
+func (s *Share) UnmarshallJSON([]byte) error {}

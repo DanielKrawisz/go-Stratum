@@ -1,15 +1,13 @@
 package Stratum
 
-type RequestID uint64
-
 type Request struct {
-	RequestID RequestID
+	MessageID MessageID
 	Method    Method
 	params    [][]byte
 }
 
 type Response struct {
-	RequestID RequestID
+	MessageID MessageID
 	result    []byte
 	Error     *Error
 }

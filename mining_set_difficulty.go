@@ -1,32 +1,27 @@
 package Stratum
 
-import "errors"
+import (
+	"errors"
+)
 
-type setDifficulty struct {
-	Notification
+type SetDifficultyParams struct {
+	Difficulty Difficulty
 }
 
-func (au *setDifficulty) Params() (float64, error) {
-	if len(au.params) != 1 {
-		return 0, errors.New("Incorrect parameter length")
+func (p *SetDifficultyParams) Read(n *notification) error {
+	if len(n.params) != 1 {
+		return errors.New("Incorrect parameter length")
 	}
 
-	var difficulty float64
-	err := json.Unmarshall(au.params[0], difficulty)
-	if err != nil {
-		return 0, err
+	if !ValidDifficulty(n.params[0]) {
+		return errors.New("Invalid difficulty")
 	}
 
-	if difficulty <= 0 {
-		return 0, errors.New("Invalid difficulty value; must be >= 0")
-	}
+	p.Difficulty = n.params[0]
 
-	return difficulty, nil
+	return nil
 }
 
-func NewSetDifficulty(d Difficulty) *setDifficulty {
-	return &setDifficulty{
-		Method: EncodeMethod(MiningSetDifficulty),
-		Params: d,
-	}
+func SetDifficulty(d Difficulty) notification {
+	return Notification(MiningSetDifficulty, []interface{}{d})
 }

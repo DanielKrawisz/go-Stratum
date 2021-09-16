@@ -11,14 +11,6 @@ type NotifyParams struct {
 	Timestamp     uint32
 }
 
-func (s *NotifyParams) MarshallJSON() ([]byte, error) {}
+func (p *NotifyParams) read(n *notification) error {}
 
-func (s *NotifyParams) UnmarshallJSON([]byte) error {}
-
-type notify struct {
-	Notification
-}
-
-func (n *notify) Params() (NotifyParams, error) {}
-
-func NewNotify(NotifyParams) *notify {}
+func Notify(NotifyParams) notification {}

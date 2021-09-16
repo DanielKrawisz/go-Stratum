@@ -23,6 +23,4 @@ type Share struct {
 	work.Share
 }
 
-func (s *Share) MarshallJSON() ([]byte, error) {}
-
-func (s *Share) UnmarshallJSON([]byte) error {}
+func (p *Share) read(r *request) error {}

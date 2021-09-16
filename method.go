@@ -6,6 +6,8 @@ import (
 
 type Method uint8
 
+type method string
+
 const (
 	Unset Method = iota
 	MiningAuthorize
@@ -24,7 +26,7 @@ const (
 	ClientShowMessage
 )
 
-func EncodeMethod(m Method) (string, error) {
+func EncodeMethod(m Method) (method, error) {
 	switch m {
 	case MiningAuthorize:
 		return "mining.authorize", nil
@@ -59,7 +61,7 @@ func EncodeMethod(m Method) (string, error) {
 	}
 }
 
-func DecodeMethod(m string) (Method, error) {
+func DecodeMethod(m method) (Method, error) {
 	switch m {
 	case "mining.authorize":
 		return MiningAuthorize, nil

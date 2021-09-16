@@ -1,11 +1,11 @@
 package Stratum
 
-type submitRequest struct {
-	Request
+type SubmitParams Share
+
+func Submit(MessageID, SubmitParams) request {}
+
+type SubmitResult BooleanResult
+
+func SubmitResponse(id MessageID, b bool) response {
+	return BooleanResponse(id, b)
 }
-
-func (r *submitRequest) Params() (Share, error) {}
-
-func NewSubmitRequest(MessageID, Share) *submitRequest {}
-
-type submitResponse booleanResponse

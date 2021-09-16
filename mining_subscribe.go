@@ -7,29 +7,21 @@ type Subscription struct {
 	ID     SessionID
 }
 
-type SubscribeRequestParams struct {
+type SubscribeParams struct {
 	UserAgent   string
 	ExtraNonce1 *SessionID
 }
 
-type SubscribeResponseParams struct {
+func (p *SubscribeParams) Read(r *request) error {}
+
+func SubscribeRequest(MessageID, SubscribeParams) request {}
+
+type SubscribeResult struct {
 	Subscriptions   []Subscription
 	ExtraNonce1     SessionID
 	ExtraNonce2Size uint32
 }
 
-type subscribeRequest struct {
-	Request
-}
+func (p *SubscribeResult) Read(r *response) error {}
 
-func (r *subscribeRequest) Params() (SubscribeRequestParams, error) {}
-
-func NewSubscribeRequest(MessageID, SubscribeRequestParams) *subscribeRequest {}
-
-type subscribeResponse struct {
-	Response
-}
-
-func (r *subscribeResponse) Params() (SubscribeResponseParams, error) {}
-
-func NewSubscribeResponse(MessageID, SubscribeResponseParams) *subscribeResponse {}
+func SubscribeResponse(MessageID, SubscribeResult) response {}

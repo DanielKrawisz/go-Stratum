@@ -19,7 +19,7 @@ for version 1 has been laid out.
 * mining.configure
 * mining.authorize
 * mining.subscribe
-* mining.set_difficulty
+* mining.set_difficulty 
 * mining.set_version_mask
 * mining.notify
 * mining.submit
@@ -138,4 +138,4 @@ Sent by the server to notify of a change in version mask. Requires the
 
 ### mining.submit
 
-Sent by the client when a new share is mined. Modified by `version-rolling`. 
+Sent by the client when a new share is mined. Modified by `version-rolling`.

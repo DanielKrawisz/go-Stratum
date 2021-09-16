@@ -1,9 +1,9 @@
 package Stratum
 
-type setVersionMask struct {
-	Notification
+type SetVersionMaskParams struct {
+	Mask uint32
 }
 
-func (au *setVersionMask) Params() (uint32, error) {}
+func (p *SetVersionMaskParams) read(n *notification) error {}
 
-func NewSetVersionMask(uint32) *setVersionMask {}
+func SetVersionMask(uint32) *notification {}

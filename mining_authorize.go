@@ -13,6 +13,6 @@ type authorizeRequest struct {
 
 func (au *authorizeRequest) Params() (AuthorizeParams, error) {}
 
-func NewAuthorizeRequest(RequestID, AuthorizeParams) *authorizeRequest {}
+func NewAuthorizeRequest(MessageID, AuthorizeParams) *authorizeRequest {}
 
 type authorizeResponse booleanResponse

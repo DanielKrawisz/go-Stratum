@@ -6,4 +6,4 @@ type setVersionMask struct {
 
 func (au *setVersionMask) Params() (uint32, error) {}
 
-func NewSetVersionMask(MethodID, uint32) *setVersionMask {}
+func NewSetVersionMask(uint32) *setVersionMask {}

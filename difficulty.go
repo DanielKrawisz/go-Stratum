@@ -1,10 +1,16 @@
 package Stratum
 
+import "encoding/json"
+
 type Difficulty []byte
 
 // Difficulty can be given as a uint or a float.
-func DifficultyFromUInt(uint64) {}
+func DifficultyFromUInt(x uint64) Difficulty {
+	id, _ := json.Marshal(x)
+	return id
+}
 
-func DifficultyFromFloat(float64) {}
-
-func DecodeDifficulty(Difficulty) (float64, error) {}
+func DifficultyFromFloat(x float64) Difficulty {
+	id, _ := json.Marshal(x)
+	return id
+}

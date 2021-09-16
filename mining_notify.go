@@ -21,4 +21,4 @@ type notify struct {
 
 func (n *notify) Params() (NotifyParams, error) {}
 
-func NewNotify(MethodID, NotifyParams) *notify {}
+func NewNotify(NotifyParams) *notify {}

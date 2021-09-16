@@ -13,9 +13,9 @@ type SubscribeRequestParams struct {
 }
 
 type SubscribeResponseParams struct {
-	Subscriptions []Subscription
-	ExtraNonce1   SessionID
-	uint32        ExtraNonce2Size
+	Subscriptions   []Subscription
+	ExtraNonce1     SessionID
+	ExtraNonce2Size uint32
 }
 
 type subscribeRequest struct {
@@ -24,7 +24,7 @@ type subscribeRequest struct {
 
 func (r *subscribeRequest) Params() (SubscribeRequestParams, error) {}
 
-func NewSubscribeRequest(MessageID, SubscriptionRequestParams) *subscribeRequest {}
+func NewSubscribeRequest(MessageID, SubscribeRequestParams) *subscribeRequest {}
 
 type subscribeResponse struct {
 	Response
@@ -32,4 +32,4 @@ type subscribeResponse struct {
 
 func (r *subscribeResponse) Params() (SubscribeResponseParams, error) {}
 
-func NewSubscribeRequest(MessageID, SubscriptionResponseParams) *subscribeResponse {}
+func NewSubscribeResponse(MessageID, SubscribeResponseParams) *subscribeResponse {}

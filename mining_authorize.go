@@ -20,7 +20,7 @@ func (p *AuthorizeParams) Read(r *request) error {
 	var ok bool
 	p.Username, ok = r.params[0].(string)
 	if !ok {
-		return errors.New("invalid value")
+		return errors.New("invalid username format")
 	}
 
 	if l == 1 {
@@ -30,7 +30,7 @@ func (p *AuthorizeParams) Read(r *request) error {
 
 	password, ok := r.params[1].(string)
 	if !ok {
-		return errors.New("invalid value")
+		return errors.New("invalid password format")
 	}
 
 	p.Password = &password
@@ -38,7 +38,6 @@ func (p *AuthorizeParams) Read(r *request) error {
 }
 
 func AuthorizeRequest(id MessageID, r AuthorizeParams) request {
-	var params []string
 	if r.Password == nil {
 		return Request(id, MiningAuthorize, []interface{}{r.Username})
 	}

@@ -9,7 +9,7 @@ import (
 
 // Notification for methods that do not require a response.
 type notification struct {
-	method method        `json:"method"`
+	method string        `json:"method"`
 	params []interface{} `json:"params"`
 }
 
@@ -29,13 +29,13 @@ func (n *notification) Method() Method {
 // request is for methods that require a response.
 type request struct {
 	MessageID MessageID     `json:"id"`
-	method    method        `json:"method"`
+	method    string        `json:"method"`
 	params    []interface{} `json:"params"`
 }
 
 func Request(id MessageID, m Method, params []interface{}) request {
 	n, _ := EncodeMethod(m)
-	return response{
+	return request{
 		MessageID: id,
 		method:    n,
 		params:    params,
@@ -95,6 +95,8 @@ func (r *request) UnmarshallJSON(j []byte) error {
 	if r.Method() == Unset {
 		return errors.New("Invalid method")
 	}
+
+	return nil
 }
 
 func (r *response) MarshallJSON() ([]byte, error) {
@@ -105,7 +107,7 @@ func (r *response) MarshallJSON() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *response) UnmarshallJSON([]byte) error {
+func (r *response) UnmarshallJSON(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
@@ -114,6 +116,8 @@ func (r *response) UnmarshallJSON([]byte) error {
 	if !ValidMessageID(r.MessageID) {
 		return errors.New("Invalid id")
 	}
+
+	return nil
 }
 
 func (r *notification) MarshallJSON() ([]byte, error) {
@@ -124,7 +128,7 @@ func (r *notification) MarshallJSON() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *notification) UnmarshallJSON([]byte) error {
+func (r *notification) UnmarshallJSON(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
@@ -133,4 +137,6 @@ func (r *notification) UnmarshallJSON([]byte) error {
 	if r.Method() == Unset {
 		return errors.New("Invalid method")
 	}
+
+	return nil
 }

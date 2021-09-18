@@ -1,7 +1,7 @@
 package Stratum
 
 type NotifyParams struct {
-	JobID         JobID
+	JobID         ID
 	Digest        [32]byte
 	GenerationTX1 []byte
 	GenerationTX2 []byte

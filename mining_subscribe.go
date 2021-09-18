@@ -7,7 +7,7 @@ import (
 
 type SubscribeParams struct {
 	UserAgent   string
-	ExtraNonce1 *SessionID
+	ExtraNonce1 *ID
 }
 
 func (p *SubscribeParams) Read(r *request) error {
@@ -32,7 +32,7 @@ func (p *SubscribeParams) Read(r *request) error {
 		return errors.New("invalid session id format")
 	}
 
-	id, err := DecodeSessionID(idstr)
+	id, err := decodeID(idstr)
 	if err != nil {
 		return err
 	}
@@ -46,19 +46,19 @@ func SubscribeRequest(id MessageID, r SubscribeParams) request {
 		return Request(id, MiningSubscribe, []interface{}{r.UserAgent})
 	}
 
-	return Request(id, MiningSubscribe, []interface{}{r.UserAgent, EncodeSessionID(*r.ExtraNonce1)})
+	return Request(id, MiningSubscribe, []interface{}{r.UserAgent, encodeID(*r.ExtraNonce1)})
 }
 
 // A Subscription is a 2-element json array containing a method
 // and a session id.
 type Subscription struct {
-	Method Method
-	ID     SessionID
+	Method    Method
+	SessionID ID
 }
 
 type SubscribeResult struct {
 	Subscriptions   []Subscription
-	ExtraNonce1     SessionID
+	ExtraNonce1     ID
 	ExtraNonce2Size uint32
 }
 
@@ -106,13 +106,13 @@ func (p *SubscribeResult) Read(r *response) error {
 			return err
 		}
 
-		p.Subscriptions[i].ID, err = DecodeSessionID(subscriptions[i][1])
+		p.Subscriptions[i].SessionID, err = decodeID(subscriptions[i][1])
 		if err != nil {
 			return err
 		}
 	}
 
-	p.ExtraNonce1, err = DecodeSessionID(idstr)
+	p.ExtraNonce1, err = decodeID(idstr)
 	if err != nil {
 		return errors.New("Invalid session id")
 	}
@@ -132,12 +132,12 @@ func SubscribeResponse(m MessageID, r SubscribeResult) response {
 		}
 
 		subscriptions[i][0] = method
-		subscriptions[i][1] = EncodeSessionID(r.Subscriptions[i].ID)
+		subscriptions[i][1] = encodeID(r.Subscriptions[i].SessionID)
 	}
 
 	result := make([]interface{}, 3)
 	result[0] = subscriptions
-	result[1] = EncodeSessionID(r.ExtraNonce1)
+	result[1] = encodeID(r.ExtraNonce1)
 	result[2] = r.ExtraNonce2Size
 
 	return Response(m, result)

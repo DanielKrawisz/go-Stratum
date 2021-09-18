@@ -1,6 +1,9 @@
 package Stratum
 
-import "errors"
+import (
+	"errors"
+	"math"
+)
 
 type SubscribeParams struct {
 	UserAgent   string
@@ -82,16 +85,22 @@ func (p *SubscribeResult) Read(r *response) error {
 
 	extraNonce2Size, ok := result[2].(uint64)
 	if !ok {
-		return errors.New("Invalid ExtraNonc2_size")
+		return errors.New("Invalid ExtraNonces2_size")
 	}
 
+	if extraNonce2Size > math.MaxUint32 {
+		return errors.New("ExtraNonce2_size too big.")
+	}
+
+	p.ExtraNonce2Size = uint32(extraNonce2Size)
+
+	var err error
 	p.Subscriptions = make([]Subscription, len(subscriptions))
 	for i := 0; i < len(subscriptions); i++ {
 		if len(subscriptions[i]) != 2 {
 			return errors.New("Invalid subscriptions format")
 		}
 
-		var err error
 		p.Subscriptions[i].Method, err = DecodeMethod(subscriptions[i][0])
 		if err != nil {
 			return err
@@ -103,12 +112,12 @@ func (p *SubscribeResult) Read(r *response) error {
 		}
 	}
 
-	id, err := DecodeSessionID(idstr)
+	p.ExtraNonce1, err = DecodeSessionID(idstr)
 	if err != nil {
 		return errors.New("Invalid session id")
 	}
 
-	// TODO I can't quite finish this function right now.
+	return nil
 
 }
 

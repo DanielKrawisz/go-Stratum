@@ -2,4 +2,4 @@ module github.com/DanielKrawisz/go-Stratum
 
 go 1.16
 
-require github.com/DanielKrawisz/go-work v0.0.0-20210916160812-2f821c9f4ea8
+require github.com/DanielKrawisz/go-work v0.0.0-20210918002341-024eea4ea909

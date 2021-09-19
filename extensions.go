@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+// https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki
+
 type Extension uint8
 
 const (

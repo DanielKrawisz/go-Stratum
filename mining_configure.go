@@ -1,5 +1,7 @@
 package Stratum
 
+import "errors"
+
 // https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki
 
 type ConfigureParams struct {
@@ -63,6 +65,9 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 	}
 }
 
+func (p *ConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
+}
+
 type VersionRollingConfigurationResult struct {
 	Accepted bool
 	Mask     uint32
@@ -100,6 +105,9 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 	}
 }
 
+func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
+}
+
 type MinimumDifficultyConfigurationRequest struct {
 	Difficulty Difficulty
 }
@@ -117,6 +125,9 @@ func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 	return &MinimumDifficultyConfigurationRequest{
 		Difficulty: d,
 	}
+}
+
+func (p *ConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
 }
 
 type MinimumDifficultyConfigurationResult struct {
@@ -139,6 +150,9 @@ func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 	}
 }
 
+func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
+}
+
 type SubscribeExtranonceConfigurationRequest struct{}
 
 func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
@@ -147,6 +161,9 @@ func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	}
 
 	return &SubscribeExtranonceConfigurationRequest{}
+}
+
+func (p *ConfigureParams) addSubscribeExtranonce(x SubscribeExtranonceConfigurationRequest) error {
 }
 
 type SubscribeExtranonceConfigurationResult struct {
@@ -167,6 +184,9 @@ func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	return &SubscribeExtranonceConfigurationResult{
 		Accepted: accepted,
 	}
+}
+
+func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
 }
 
 type InfoConfigurationRequest struct {
@@ -226,6 +246,9 @@ func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
 	return &info
 }
 
+func (p *ConfigureParams) addInfo(x InfoConfigurationRequest) error {
+}
+
 type InfoConfigurationResult struct {
 	Accepted bool
 }
@@ -246,10 +269,46 @@ func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
 	}
 }
 
-func (p *ConfigureParams) Add(interface{}) error {}
+func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
+}
 
-func (p *ConfigureResult) Add(interface{}) error {}
+func (p *ConfigureParams) Add(z interface{}) error {
+	switch x := z.(type) {
+	case VersionRollingConfigurationRequest:
+		return p.addVersionRolling(x)
+	case MinimumDifficultyConfigurationRequest:
+		return p.addMinimumDifficulty(x)
+	case SubscribeExtranonceConfigurationRequest:
+		return p.addSubscribeExtranonce(x)
+	case InfoConfigurationRequest:
+		return p.addInfo(x)
+	default:
+		return errors.New("Unrecognized extension request")
+	}
+}
 
-func ConfigureRequest(MessageID, ConfigureParams) request {}
+func (p *ConfigureResult) Add(z interface{}) error {
+	switch x := z.(type) {
+	case VersionRollingConfigurationResult:
+		return p.addVersionRolling(x)
+	case MinimumDifficultyConfigurationResult:
+		return p.addMinimumDifficulty(x)
+	case SubscribeExtranonceConfigurationResult:
+		return p.addSubscribeExtranonce(x)
+	case InfoConfigurationResult:
+		return p.addInfo(x)
+	default:
+		return errors.New("Unrecognized extension request")
+	}
+}
 
-func ConfigureResponse(MessageID, ConfigureResult) response {}
+func ConfigureRequest(id MessageID, p ConfigureParams) request {
+	params := make([]interface{}, 2)
+	params[0] = p.Supported
+	params[1] = p.Parameters
+	return Request(id, MiningConfigure, params)
+}
+
+func ConfigureResponse(id MessageID, r ConfigureResult) response {
+	return Response(id, r)
+}

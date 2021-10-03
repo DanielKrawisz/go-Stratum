@@ -20,6 +20,16 @@ func (p *ConfigureParams) supports(extension string) bool {
 
 type ConfigureResult map[string]interface{}
 
+func (p *ConfigureResult) supports(extension string) bool {
+	for supported := range *p {
+		if supported == extension {
+			return true
+		}
+	}
+
+	return false
+}
+
 type VersionRollingConfigurationRequest struct {
 	Mask        uint32
 	MinBitCount byte
@@ -66,6 +76,16 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 }
 
 func (p *ConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
+	if !p.supports("version_rolling") {
+		return errors.New("request already contains version_rolling")
+	}
+
+	p.Supported = append(p.Supported, "version_rolling")
+
+	p.Parameters["version_rolling.mask"] = encodeLittleEndian(x.Mask)
+	p.Parameters["version-rolling.min-bit-count"] = x.MinBitCount
+
+	return nil
 }
 
 type VersionRollingConfigurationResult struct {
@@ -84,6 +104,13 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 		return nil
 	}
 
+	if !accepted {
+		return &VersionRollingConfigurationResult{
+			Accepted: false,
+			Mask:     0,
+		}
+	}
+
 	m, ok := (*p)["version_rolling.mask"]
 	if !ok {
 		return nil
@@ -100,12 +127,22 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 	}
 
 	return &VersionRollingConfigurationResult{
-		Accepted: accepted,
+		Accepted: true,
 		Mask:     mask,
 	}
 }
 
 func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
+	if !p.supports("version_rolling") {
+		return errors.New("result already contains version_rolling")
+	}
+
+	map[string]interface{}(*p)["version_rolling"] = x.Accepted
+	if x.Accepted {
+		map[string]interface{}(*p)["version_rolling.mask"] = encodeLittleEndian(x.Mask)
+	}
+
+	return nil
 }
 
 type MinimumDifficultyConfigurationRequest struct {
@@ -128,6 +165,15 @@ func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 }
 
 func (p *ConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
+	if !p.supports("minimum_difficulty") {
+		return errors.New("request already contains minimum_difficulty")
+	}
+
+	p.Supported = append(p.Supported, "minimum_difficulty")
+
+	p.Parameters["minimum_difficulty.value"] = x.Difficulty
+
+	return nil
 }
 
 type MinimumDifficultyConfigurationResult struct {
@@ -151,6 +197,13 @@ func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 }
 
 func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
+	if !p.supports("minimum_difficulty") {
+		return errors.New("result already contains minimum_difficulty")
+	}
+
+	map[string]interface{}(*p)["minimum_difficulty"] = x.Accepted
+
+	return nil
 }
 
 type SubscribeExtranonceConfigurationRequest struct{}
@@ -164,6 +217,13 @@ func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 }
 
 func (p *ConfigureParams) addSubscribeExtranonce(x SubscribeExtranonceConfigurationRequest) error {
+	if !p.supports("subscribe_extranonce") {
+		return errors.New("request already contains subscribe_extranonce")
+	}
+
+	p.Supported = append(p.Supported, "subscribe_extranonce")
+
+	return nil
 }
 
 type SubscribeExtranonceConfigurationResult struct {
@@ -187,6 +247,13 @@ func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 }
 
 func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
+	if !p.supports("subscribe_extranonce") {
+		return errors.New("result already contains subscribe_extranonce")
+	}
+
+	map[string]interface{}(*p)["subscribe_extranonce"] = x.Accepted
+
+	return nil
 }
 
 type InfoConfigurationRequest struct {
@@ -247,6 +314,18 @@ func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
 }
 
 func (p *ConfigureParams) addInfo(x InfoConfigurationRequest) error {
+	if !p.supports("info") {
+		return errors.New("request already contains info")
+	}
+
+	p.Supported = append(p.Supported, "info")
+
+	p.Parameters["info.connection-url"] = x.ConnectionURL
+	p.Parameters["info.hw-version"] = x.HWVersion
+	p.Parameters["info.sw-version"] = x.SWVersion
+	p.Parameters["info.hw-id"] = x.HWID
+
+	return nil
 }
 
 type InfoConfigurationResult struct {
@@ -270,6 +349,13 @@ func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
 }
 
 func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
+	if !p.supports("info") {
+		return errors.New("result already contains info")
+	}
+
+	map[string]interface{}(*p)["info"] = x.Accepted
+
+	return nil
 }
 
 func (p *ConfigureParams) Add(z interface{}) error {

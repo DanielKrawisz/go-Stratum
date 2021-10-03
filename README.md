@@ -7,24 +7,17 @@ for a description of Stratum and
 [here](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki)
 for Stratum extensions. Extensions are necessary to support ASIC Boost.
 
-No tests have been written and no methods are supported but the overall plan
-for version 1 has been laid out.
-
 ## Supported Methods
-
-(none)
-
-## Methods to be supported for version 1 of this library.
 
 * mining.configure
 * mining.authorize
 * mining.subscribe
-* mining.set_difficulty 
+* mining.set_difficulty
 * mining.set_version_mask
 * mining.notify
 * mining.submit
 
-## Methods with no plans to be supported for version 1.
+## Unsupported methods
 
 * mining.set_extranonce
 * mining.suggest_difficulty
